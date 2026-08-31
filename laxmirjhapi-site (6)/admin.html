@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — লক্ষ্মীর ঝাঁপি</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Hind+Siliguri:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ivory:#FAF6ED; --ivory-deep:#F2EBDA; --ink:#2B2620; --ink-soft:#5A5246;
+    --sage:#5F7A5E; --sage-deep:#455C46; --rose:#D98B93; --rose-deep:#C06E78;
+    --gold:#A67C3D; --lime:#DFF48F; --line:rgba(43,38,32,0.14);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--ivory); color:var(--ink);
+    font-family:'Hind Siliguri', sans-serif;
+  }
+  h1,h2{ font-family:'Tiro Bangla', serif; font-weight:400; }
+  .eyebrow{ font-family:'Marcellus', serif; text-transform:uppercase; letter-spacing:0.18em; font-size:0.7rem; color:var(--sage-deep); }
+
+  /* Login gate */
+  #loginScreen{
+    min-height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:16px; padding:20px; text-align:center;
+  }
+  #loginScreen input{
+    padding:14px 18px; border:1px solid var(--line); border-radius:3px; font-size:1rem; width:280px; max-width:80vw; font-family:'Hind Siliguri', sans-serif;
+  }
+  #loginScreen button, .btn{
+    padding:13px 28px; border:1px solid var(--ink); background:var(--ink); color:var(--ivory);
+    font-family:'Marcellus', serif; letter-spacing:0.04em; font-size:0.85rem; border-radius:3px; cursor:pointer; transition:all .2s;
+  }
+  #loginScreen button:hover, .btn:hover{ background:var(--rose-deep); border-color:var(--rose-deep); }
+  #loginError{ color:var(--rose-deep); font-size:0.85rem; min-height:20px; }
+
+  /* App shell */
+  #app{ display:none; max-width:1000px; margin:0 auto; padding:36px 24px 80px; }
+  header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:14px;}
+  header h1{ font-size:1.7rem; }
+  .top-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+  .btn-outline{ background:transparent; color:var(--ink); }
+  .btn-outline:hover{ background:var(--ink); color:var(--ivory); }
+  .btn-sage{ background:var(--sage-deep); border-color:var(--sage-deep); }
+  .btn-sage:hover{ background:#3c4f3d; }
+  .hint{ color:var(--ink-soft); font-size:0.88rem; margin:6px 0 30px; line-height:1.6; }
+  .hint b{ color:var(--ink); }
+
+  .panel{ background:var(--ivory-deep); border:1px solid var(--line); border-radius:6px; padding:24px; margin-bottom:34px; }
+  .panel h2{ font-size:1.2rem; margin-bottom:18px; }
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .form-grid .full{ grid-column:1 / -1; }
+  label{ display:block; font-family:'Marcellus', serif; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--sage-deep); margin-bottom:6px; }
+  input[type=text], select{
+    width:100%; padding:11px 14px; border:1px solid var(--line); border-radius:3px; font-family:'Hind Siliguri', sans-serif; font-size:0.95rem; background:var(--ivory);
+  }
+  .img-drop{
+    border:1.5px dashed var(--line); border-radius:4px; padding:16px; text-align:center; cursor:pointer; background:var(--ivory); font-size:0.85rem; color:var(--ink-soft);
+  }
+  .img-drop img{ max-height:100px; margin:0 auto 8px; border-radius:3px; }
+  .form-actions{ margin-top:18px; display:flex; gap:10px; }
+
+  .prod-list{ display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:16px; }
+  .prod-item{ background:var(--ivory-deep); border:1px solid var(--line); border-radius:5px; overflow:hidden; }
+  .prod-item .thumb{ aspect-ratio:3/4; background:var(--ivory); display:flex; align-items:center; justify-content:center; color:var(--ink-soft); font-size:0.75rem; background-size:cover; background-position:center; }
+  .prod-item .info{ padding:12px 14px; }
+  .prod-item h3{ font-size:0.92rem; font-weight:600; margin-bottom:2px; }
+  .prod-item .price{ color:var(--rose-deep); font-weight:600; font-size:0.88rem; margin-bottom:10px; }
+  .prod-item .row-actions{ display:flex; gap:8px; }
+  .mini-btn{
+    flex:1; padding:8px; border-radius:3px; border:1px solid var(--line); background:var(--ivory);
+    font-family:'Marcellus', serif; font-size:0.72rem; cursor:pointer; text-align:center;
+  }
+  .mini-btn:hover{ background:var(--ink); color:var(--ivory); }
+  .mini-btn.danger:hover{ background:var(--rose-deep); border-color:var(--rose-deep); }
+
+  #toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--sage-deep); color:var(--ivory); padding:14px 26px; border-radius:4px; font-size:0.9rem;
+    opacity:0; transition:all .3s; pointer-events:none; max-width:90vw; text-align:center;
+  }
+  #toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  @media (max-width:640px){ .form-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <span class="eyebrow">লক্ষ্মীর ঝাঁপি — Admin</span>
+  <h1>অ্যাডমিন প্যানেল</h1>
+  <input type="password" id="pwInput" placeholder="পাসওয়ার্ড দিন">
+  <button onclick="tryLogin()">প্রবেশ করুন</button>
+  <div id="loginError"></div>
+</div>
+
+<div id="app">
+  <header>
+    <h1>প্রোডাক্ট ম্যানেজমেন্ট</h1>
+    <div class="top-actions">
+      <button class="btn btn-outline" onclick="window.open('index.html','_blank')">সাইট দেখুন</button>
+      <button class="btn btn-sage" onclick="downloadJSON()">products.json ডাউনলোড করুন</button>
+    </div>
+  </header>
+  <p class="hint">
+    এখানে প্রোডাক্ট যোগ/এডিট/ডিলিট করুন, তারপর <b>"products.json ডাউনলোড করুন"</b> বাটনে ক্লিক করুন।
+    ডাউনলোড হওয়া ফাইলটা আপনার হোস্টিং-এ গিয়ে পুরনো <b>products.json</b> ফাইলের জায়গায় আপলোড (replace) করলেই আপনার লাইভ সাইট আপডেট হয়ে যাবে।
+  </p>
+
+  <div class="panel">
+    <h2 id="formTitle">নতুন প্রোডাক্ট যোগ করুন</h2>
+    <div class="form-grid">
+      <div class="full">
+        <label>প্রোডাক্টের নাম</label>
+        <input type="text" id="fName" placeholder="যেমন: মনিপুরী সিল্ক শাড়ি">
+      </div>
+      <div>
+        <label>দাম</label>
+        <input type="text" id="fPrice" placeholder="যেমন: ৳ ২,৫০০">
+      </div>
+      <div>
+        <label>ক্যাটাগরি</label>
+        <select id="fTag">
+          <option value="Saree">শাড়ি (Saree)</option>
+          <option value="Manipuri">মনিপুরী শাড়ি</option>
+          <option value="Handmade">ব্লাউজ পিস (Handmade)</option>
+          <option value="Kurti">কুর্তি</option>
+          <option value="3-Piece">থ্রি-পিস</option>
+        </select>
+      </div>
+      <div class="full">
+        <label>প্রোডাক্ট ছবি</label>
+        <div class="img-drop" id="dropZone" onclick="document.getElementById('fImage').click()">
+          <div id="dropPreview">ছবি বাছাই করতে এখানে ক্লিক করুন</div>
+        </div>
+        <input type="file" id="fImage" accept="image/*" style="display:none" onchange="handleImage(event)">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-sage" onclick="saveProduct()" id="saveBtn">প্রোডাক্ট যোগ করুন</button>
+      <button class="btn btn-outline" onclick="resetForm()" id="cancelBtn" style="display:none;">বাতিল করুন</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>বর্তমান প্রোডাক্ট (<span id="countLabel">0</span>)</h2>
+    <div class="prod-list" id="prodList"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const PASSWORD = "laxmi2026";
+  let products = [];
+  let editingId = null;
+  let pendingImage = "";
+
+  function tryLogin(){
+    const val = document.getElementById('pwInput').value;
+    if(val === PASSWORD){
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      loadProducts();
+    } else {
+      document.getElementById('loginError').textContent = 'পাসওয়ার্ড ভুল হয়েছে, আবার চেষ্টা করুন।';
+    }
+  }
+  document.getElementById('pwInput').addEventListener('keydown', e => { if(e.key === 'Enter') tryLogin(); });
+
+  function loadProducts(){
+    fetch('products.json').then(r => r.json()).then(data => {
+      products = data;
+      renderList();
+    }).catch(() => { products = []; renderList(); });
+  }
+
+  function handleImage(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      pendingImage = ev.target.result;
+      document.getElementById('dropPreview').innerHTML = `<img src="${pendingImage}" alt="preview">`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function saveProduct(){
+    const name = document.getElementById('fName').value.trim();
+    const price = document.getElementById('fPrice').value.trim();
+    const tag = document.getElementById('fTag').value;
+    if(!name || !price){
+      showToast('নাম ও দাম দুটোই দিন');
+      return;
+    }
+    if(editingId){
+      const p = products.find(x => x.id === editingId);
+      p.name = name; p.price = price; p.tag = tag;
+      if(pendingImage) p.image = pendingImage;
+      showToast('প্রোডাক্ট আপডেট হয়েছে');
+    } else {
+      products.push({
+        id: 'p' + Date.now(),
+        name, price, tag,
+        image: pendingImage || ""
+      });
+      showToast('প্রোডাক্ট যোগ হয়েছে');
+    }
+    resetForm();
+    renderList();
+  }
+
+  function editProduct(id){
+    const p = products.find(x => x.id === id);
+    if(!p) return;
+    editingId = id;
+    document.getElementById('fName').value = p.name;
+    document.getElementById('fPrice').value = p.price;
+    document.getElementById('fTag').value = p.tag;
+    pendingImage = p.image || "";
+    document.getElementById('dropPreview').innerHTML = p.image ? `<img src="${p.image}" alt="preview">` : 'ছবি বাছাই করতে এখানে ক্লিক করুন';
+    document.getElementById('formTitle').textContent = 'প্রোডাক্ট এডিট করুন';
+    document.getElementById('saveBtn').textContent = 'পরিবর্তন সংরক্ষণ করুন';
+    document.getElementById('cancelBtn').style.display = 'inline-block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function deleteProduct(id){
+    if(!confirm('এই প্রোডাক্টটি ডিলিট করতে চান?')) return;
+    products = products.filter(x => x.id !== id);
+    renderList();
+    showToast('প্রোডাক্ট ডিলিট হয়েছে');
+  }
+
+  function resetForm(){
+    editingId = null;
+    pendingImage = "";
+    document.getElementById('fName').value = '';
+    document.getElementById('fPrice').value = '';
+    document.getElementById('fTag').value = 'Saree';
+    document.getElementById('fImage').value = '';
+    document.getElementById('dropPreview').textContent = 'ছবি বাছাই করতে এখানে ক্লিক করুন';
+    document.getElementById('formTitle').textContent = 'নতুন প্রোডাক্ট যোগ করুন';
+    document.getElementById('saveBtn').textContent = 'প্রোডাক্ট যোগ করুন';
+    document.getElementById('cancelBtn').style.display = 'none';
+  }
+
+  function renderList(){
+    const list = document.getElementById('prodList');
+    document.getElementById('countLabel').textContent = products.length;
+    list.innerHTML = products.map(p => `
+      <div class="prod-item">
+        <div class="thumb" ${p.image ? `style="background-image:url('${p.image}')"` : ''}>${p.image ? '' : 'ছবি নেই'}</div>
+        <div class="info">
+          <h3>${p.name}</h3>
+          <div class="price">${p.price}</div>
+          <div class="row-actions">
+            <div class="mini-btn" onclick="editProduct('${p.id}')">এডিট</div>
+            <div class="mini-btn danger" onclick="deleteProduct('${p.id}')">ডিলিট</div>
+          </div>
+        </div>
+      </div>
+    `).join('') || '<p style="color:var(--ink-soft);">এখনো কোনো প্রোডাক্ট নেই — উপরে ফর্ম থেকে যোগ করুন।</p>';
+  }
+
+  function downloadJSON(){
+    const blob = new Blob([JSON.stringify(products, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'products.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('products.json ডাউনলোড হয়েছে — এখন এটা আপনার হোস্টিং-এ আপলোড করুন');
+  }
+
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3200);
+  }
+</script>
+
+</body>
+</html>
