@@ -99,11 +99,40 @@
   }
   .nav-links a:hover{ color:var(--rose-deep); }
   .nav-cta{
-    background:var(--sage-deep); color:var(--ivory) !important;
-    padding:10px 22px; border-radius:var(--radius);
-    font-size:0.78rem !important;
+    background: linear-gradient(180deg, #7a9a78 0%, var(--sage-deep) 45%, #34452f 100%);
+    color:var(--ivory) !important;
+    padding:11px 26px;
+    border-radius:999px;
+    font-size:0.8rem !important;
+    font-weight:600;
+    letter-spacing:0.04em;
+    border:1px solid #2c3a28;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.35) inset,
+      0 -3px 6px rgba(0,0,0,0.25) inset,
+      0 6px 14px rgba(43,38,32,0.35);
+    text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+    display:inline-flex; align-items:center; gap:6px;
+    transition: transform .15s ease, box-shadow .15s ease, background .2s ease;
   }
-  .nav-cta:hover{ background:var(--rose-deep) !important; }
+  .nav-cta::before{
+    content:'✦';
+    font-size:0.85em;
+  }
+  .nav-cta:hover{
+    background: linear-gradient(180deg, #8aab88 0%, #4a6248 45%, #2c3a28 100%) !important;
+    transform: translateY(-1px);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.4) inset,
+      0 -3px 6px rgba(0,0,0,0.25) inset,
+      0 8px 18px rgba(43,38,32,0.4);
+  }
+  .nav-cta:active{
+    transform: translateY(1px);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.25) inset,
+      0 2px 4px rgba(0,0,0,0.3) inset;
+  }
   .menu-btn{ display:none; background:none; border:none; font-size:1.6rem; color:var(--ink); cursor:pointer; }
 
   /* ---------- Hero ---------- */
@@ -385,9 +414,6 @@
       <p class="hero-tagline">
         Manipuri sarees, handmade blouse pieces, kurtis &amp; three-piece sets — crafted with care, delivered to your doorstep.
       </p>
-      <div class="hero-ctas">
-        <a href="#order" class="btn btn-outline">WhatsApp-এ অর্ডার</a>
-      </div>
     </div>
     <div class="hero-side-img hero-side-right">
       <img src="assets/hero-model-right.jpg" alt="Laxmir Jhapi — handloom saree">
