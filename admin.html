@@ -97,10 +97,15 @@
   <header>
     <h1>প্রোডাক্ট ম্যানেজমেন্ট</h1>
     <div class="top-actions">
+      <button class="btn btn-outline" onclick="document.getElementById('fileImport').click()">products.json লোড করুন</button>
+      <input type="file" id="fileImport" accept="application/json" style="display:none" onchange="handleImport(event)">
       <button class="btn btn-outline" onclick="window.open('index.html','_blank')">সাইট দেখুন</button>
       <button class="btn btn-sage" onclick="downloadJSON()">products.json ডাউনলোড করুন</button>
     </div>
   </header>
+  <p class="hint">
+    <b>প্রথমে "products.json লোড করুন" বাটনে ক্লিক করে আপনার products.json ফাইলটা বেছে দিন</b> — ব্রাউজারের নিরাপত্তার কারণে এটা স্বয়ংক্রিয়ভাবে লোড নাও হতে পারে।
+  </p>
   <p class="hint">
     এখানে প্রোডাক্ট যোগ/এডিট/ডিলিট করুন, তারপর <b>"products.json ডাউনলোড করুন"</b> বাটনে ক্লিক করুন।
     ডাউনলোড হওয়া ফাইলটা আপনার হোস্টিং-এ গিয়ে পুরনো <b>products.json</b> ফাইলের জায়গায় আপলোড (replace) করলেই আপনার লাইভ সাইট আপডেট হয়ে যাবে।
@@ -172,6 +177,23 @@
       products = data;
       renderList();
     }).catch(() => { products = []; renderList(); });
+  }
+
+  function handleImport(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try{
+        const data = JSON.parse(ev.target.result);
+        products = data;
+        renderList();
+        showToast('প্রোডাক্ট লোড হয়েছে — মোট ' + products.length + ' টি');
+      } catch(err){
+        showToast('ফাইলটি সঠিক নয়, আবার চেষ্টা করুন');
+      }
+    };
+    reader.readAsText(file);
   }
 
   function handleImage(e){
