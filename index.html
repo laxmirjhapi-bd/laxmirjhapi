@@ -246,6 +246,22 @@
   .section-head{ text-align:center; max-width:600px; margin:0 auto 44px; }
   .section-head h2{ font-size:2rem; margin:10px 0 12px; }
   .section-head p{ color:var(--ink-soft); font-size:0.98rem; }
+  .collections-grid{
+    display:grid;
+    grid-template-columns: minmax(90px,170px) 1fr minmax(90px,170px);
+    align-items:center; gap:24px;
+  }
+  .collections-center{ min-width:0; }
+  .dhak-loop-side img{
+    width:100%; border-radius:12px; display:block;
+    box-shadow:0 10px 24px rgba(43,38,32,0.18);
+  }
+  @media (max-width:900px){
+    .collections-grid{ grid-template-columns: minmax(64px,110px) 1fr minmax(64px,110px); gap:12px; }
+  }
+  @media (max-width:600px){
+    .collections-grid{ grid-template-columns: minmax(48px,78px) 1fr minmax(48px,78px); gap:8px; }
+  }
 
   .cat-grid{
     display:flex; flex-wrap:wrap; justify-content:center; gap:18px 20px;
@@ -442,16 +458,26 @@
 
 <section id="collections">
   <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Our Collections</span>
-      <p>প্রতিটি পিস বাছাই করা হয়েছে মান ও নকশার যত্ন নিয়ে — ঐতিহ্যবাহী থেকে সমসাময়িক, সব ধরনের পছন্দের জন্য।</p>
-    </div>
-    <div class="cat-grid">
-      <div class="cat-card cat-1" onclick="filterByCategory(this,'Manipuri')"><h3>মনিপুরী শাড়ি</h3></div>
-      <div class="cat-card cat-2" onclick="filterByCategory(this,'Saree')"><h3>অরিজিনাল বেনারসের শাড়ী</h3></div>
-      <div class="cat-card cat-3" onclick="filterByCategory(this,'Handmade')"><h3>হাতের কাজের ব্লাউজ পিস</h3></div>
-      <div class="cat-card cat-4" onclick="filterByCategory(this,'Kurti')"><h3>ইন্ডিয়ান কুর্তি</h3></div>
-      <div class="cat-card cat-5" onclick="filterByCategory(this,'3-Piece')"><h3>ইন্ডিয়ান থ্রি-পিস</h3></div>
+    <div class="collections-grid">
+      <div class="dhak-loop-side dhak-loop-left">
+        <img src="assets/dhak-drummer-loop.gif" alt="Dhak drummer">
+      </div>
+      <div class="collections-center">
+        <div class="section-head">
+          <span class="eyebrow">Our Collections</span>
+          <p>প্রতিটি পিস বাছাই করা হয়েছে মান ও নকশার যত্ন নিয়ে — ঐতিহ্যবাহী থেকে সমসাময়িক, সব ধরনের পছন্দের জন্য।</p>
+        </div>
+        <div class="cat-grid">
+          <div class="cat-card cat-1" onclick="filterByCategory(this,'Manipuri')"><h3>মনিপুরী শাড়ি</h3></div>
+          <div class="cat-card cat-2" onclick="filterByCategory(this,'Saree')"><h3>অরিজিনাল বেনারসের শাড়ী</h3></div>
+          <div class="cat-card cat-3" onclick="filterByCategory(this,'Handmade')"><h3>হাতের কাজের ব্লাউজ পিস</h3></div>
+          <div class="cat-card cat-4" onclick="filterByCategory(this,'Kurti')"><h3>ইন্ডিয়ান কুর্তি</h3></div>
+          <div class="cat-card cat-5" onclick="filterByCategory(this,'3-Piece')"><h3>ইন্ডিয়ান থ্রি-পিস</h3></div>
+        </div>
+      </div>
+      <div class="dhak-loop-side dhak-loop-right">
+        <img src="assets/dhak-drummer-loop.gif" alt="Dhak drummer">
+      </div>
     </div>
   </div>
 </section>
